@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
         currentDate ?? new Date().toISOString().split("T")[0],
         timezone ?? "UTC"
       ),
-      1024
+      4096
     );
 
     // Fix model-specific JSON quirks before parsing:

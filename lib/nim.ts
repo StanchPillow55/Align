@@ -21,6 +21,9 @@ export async function callNim(
       model,
       temperature: 0.2,
       ...(maxTokens ? { max_tokens: maxTokens } : {}),
+      // Disable extended reasoning to prevent the model from exhausting
+      // max_tokens on chain-of-thought before producing the actual JSON answer.
+      chat_template_kwargs: { enable_thinking: false },
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
@@ -34,6 +37,9 @@ export async function callNim(
   }
 
   const json = await res.json();
-  const content: string = json?.choices?.[0]?.message?.content ?? "";
+  const msg = json?.choices?.[0]?.message;
+  // Reasoning models may put the answer in `content` and thinking in `reasoning_content`.
+  // If `content` is null (model ran out of tokens during reasoning), fall back to reasoning_content.
+  const content: string = msg?.content ?? msg?.reasoning_content ?? "";
   return content;
 }

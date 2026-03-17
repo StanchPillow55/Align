@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     const content = await callNim(
       explanationSystemPrompt,
       buildExplanationUserPrompt(plan),
-      600
+      2048
     );
 
     const parsed = extractJson(content) as Partial<PlanExplanation>;
